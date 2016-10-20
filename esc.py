@@ -112,6 +112,7 @@ class Octopus:
         self.frame = random.randint(0, 5)
         self.runframe = 0
         self.attackframe = 0
+        self.attackcount = random.randint(1, 10)
         self.state = self.Run
         if Octopus.image == None:
             Octopus.image = load_image('octopus.png')
@@ -119,7 +120,7 @@ class Octopus:
     def handle_run(self):
         self.x -= 2
         self.runframe += 1
-        if self.runframe == 50:
+        if self.runframe % random.randint(30, 100) == 0:
             self.state = self.Attack
             self.attackframe = 0
 
