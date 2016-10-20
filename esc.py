@@ -6,6 +6,8 @@ class Char:
 
     Attack1, Attack2, RUN, JUMP = 0, 1, 2, 3
 
+    def get_bb(self):
+        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
 
     def handle_run(self):
         self.x += self.xchange
@@ -80,6 +82,7 @@ class Zombie:
         if Zombie.image == None:
             Zombie.image = load_image('Monster-zombie.png')
 
+
     def update(self):
         self.frame = (self.frame + 1) % 7
         self.x -= 2
@@ -102,6 +105,7 @@ class Lizard:
 
     def draw(self):
         self.image.clip_draw(self.frame * 200, 0, 200, 140, self.x, self.y)
+
 
 class Octopus:
     image = None
@@ -141,6 +145,7 @@ class Octopus:
 
     def draw(self):
         self.image.clip_draw(self.frame * 150, self.state  * 150, 150, 150, self.x, self.y)
+
 
 open_canvas()
 boy = Char()
