@@ -7,13 +7,14 @@ class Zombie:
     def __init__(self):
         self.x, self.y = random.randint(500, 1400), 200
         self.frame = random.randint(0, 6)
+        self.speed = 2
         if Zombie.image == None:
             Zombie.image = load_image('Monster-zombie.png')
 
 
     def update(self, frame_time):
         self.frame = (self.frame + 1) % 7
-        self.x -= 2
+        self.x -= self.speed
 
     def draw(self):
         self.image.clip_draw(self.frame * 120, 0, 120, 120, self.x, self.y)
@@ -32,7 +33,7 @@ class Lizard:
 
     def update(self, frame_time):
         self.frame = (self.frame + 1) % 6
-        self.x = frame_time - 2
+        self.x -= 2
 
     def draw(self):
         self.image.clip_draw(self.frame * 200, 0, 200, 140, self.x, self.y)

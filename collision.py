@@ -80,6 +80,13 @@ def collide(a, b):
 def update(frame_time):
     boy.update(frame_time)
     for zombie in zombies:
+        zombie.update(frame_time)
+    for lizard in lizards:
+        lizard.update(frame_time)
+    for octopus in octopuses:
+        octopus.update(frame_time)
+
+    for zombie in zombies:
         if collide(boy, zombie):
             zombies.remove(zombie)
     for lizard in lizards:

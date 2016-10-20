@@ -17,7 +17,7 @@ class Boy:
 
 
     def handle_run(self):
-        self.x += 5
+        self.x += self.xchange
         if self.x > 800:
             self.x = 800
         elif self.x < 0:
@@ -67,6 +67,8 @@ class Boy:
                 self.state = self.Attack1
             else:
                 self.state = self.Attack2
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+            self.state = self.JUMP
 
     def update(self, frame_time):
         def clamp(minimum, x, maximum):
