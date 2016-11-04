@@ -7,9 +7,9 @@ class Boy:
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-    TIME_PER_ACTION = 0.5
+    TIME_PER_ACTION = 1.0
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-    FRAMES_PER_ACTION = 8
+    FRAMES_PER_ACTION = 6
 
     image = None
 
@@ -59,8 +59,13 @@ class Boy:
     def handle_event(self, event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
                 self.state = self.RUN
+                self.xchange += 2
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
-            self.xchange -= 5
+            self.xchange -= 2
+        elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):
+            self.xchange = 0
+        elif (event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):
+            self.xchange = 0
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_LCTRL):
             self.attackcount += 1
             if (self.attackcount % 2 == 0):
@@ -71,15 +76,8 @@ class Boy:
             self.state = self.JUMP
 
     def update(self, frame_time):
-        def clamp(minimum, x, maximum):
-            return max(minimum, min(x, maximum))
-
-        self.life_time += frame_time
-        distance = Boy.RUN_SPEED_PPS * frame_time
-        self.total_frames += Boy.FRAMES_PER_ACTION * Boy.ACTION_PER_TIME * frame_time
-        self.frame = int(self.total_frames) % 6
-
-        self.x = clamp(0, self.x, 800)
+        self.handle_state[self.state](self)
+        self.frame = (self.frame + 1) % 6
 
     def __init__(self):
         self.x, self.y = 100, 200
