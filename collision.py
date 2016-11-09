@@ -7,6 +7,7 @@ from monster import Lizard
 from monster import Octopus
 from boy import Boy
 from background import Background
+from heart import Heart
 
 name = "collision"
 
@@ -15,11 +16,13 @@ lizards = None
 octopuses = None
 boy = None
 backgroundd = None
+heart = None
 
 def create_world():
-    global boy, background, zombies, lizards, octopuses
+    global boy, background, zombies, lizards, octopuses, heart
     boy = Boy()
     background = Background()
+    heart = Heart()
     zombies = [Zombie() for i in range(4)]
     lizards = [Lizard() for i in range(4)]
     octopuses = [Octopus() for i in range(4)]
@@ -32,6 +35,7 @@ def destroy_world():
     del(zombies)
     del(lizards)
     del(octopuses)
+    del(heart)
 
 
 
@@ -101,6 +105,7 @@ def update(frame_time):
 def draw(frame_time):
     clear_canvas()
     background.draw()
+    heart.draw()
     boy.draw()
     for zombie in zombies:
         zombie.draw()

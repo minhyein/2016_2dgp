@@ -1,14 +1,14 @@
 from pico2d import*
 
 class Boy:
-    PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-    RUN_SPEED_KMPH = 5.0  # Km / Hour
+    PIXEL_PER_METER = (10.0 / 0.3)
+    RUN_SPEED_KMPH = 5.0
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
     TIME_PER_ACTION = 1.0
-    ACTION_PER_TIME = 0.5 / TIME_PER_ACTION
+    ACTION_PER_TIME = 2.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 6
 
     image = None
@@ -25,30 +25,34 @@ class Boy:
 
     def handle_jump(self):
         self.frame = 5
-        self.ychange += 0.5
+        self.ychange += 0.1
         if self.ychange < 10:
-            self.y += 5
+            self.y += 1
             self.state = self.JUMP
         elif self.ychange >= 10 and self.ychange < 20:
-            self.y -= 5
+            self.y -= 1
             if self.y < 200:
                 self.y = 200
             self.state = self.JUMP
-        elif self.ychange == 20:
+        elif self.ychange >= 20:
             self.ychange = 0
             self.state = self.RUN
 
     def handle_attack1(self):
-        self.attackframe += 1
-        if self.attackframe == 6:
+        self.attackframe += 0.2
+        if self.attackframe >= 6:
             self.state = self.RUN
             self.attackframe = 0
+        else:
+            self.state = self.Attack1
 
     def handle_attack2(self):
-        self.attackframe += 1
-        if self.attackframe == 6:
+        self.attackframe += 0.2
+        if self.attackframe >= 6:
             self.state = self.RUN
             self.attackframe = 0
+        else:
+            self.state = self.Attack2
 
     handle_state = {
         RUN: handle_run,
@@ -59,9 +63,9 @@ class Boy:
     def handle_event(self, event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
                 self.state = self.RUN
-                self.xchange += 2
+                self.xchange +=0.5
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
-            self.xchange -= 2
+            self.xchange -= 0.5
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):
             self.xchange = 0
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):
@@ -77,7 +81,8 @@ class Boy:
 
     def update(self, frame_time):
         self.handle_state[self.state](self)
-        self.frame = (self.frame + 1) % 6
+        self.total_frames += Boy.FRAMES_PER_ACTION * Boy.ACTION_PER_TIME * frame_time
+        self.frame = int(self.total_frames) % 6
 
     def __init__(self):
         self.x, self.y = 100, 200
