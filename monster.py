@@ -2,18 +2,30 @@ import random
 from pico2d import*
 
 class Zombie:
+    PIXEL_PER_METER = (10.0 / 0.3)
+    RUN_SPEED_KMPH = 5.0
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+    TIME_PER_ACTION = 1.0
+    ACTION_PER_TIME = 2.0 / TIME_PER_ACTION
+    FRAMES_PER_ACTION = 7
+
     image = None
 
     def __init__(self):
         self.x, self.y = random.randint(500, 1400), 200
         self.frame = random.randint(0, 6)
-        self.speed = 2
+        self.total_frames = 0.0
+        self.speed = 0.2
         if Zombie.image == None:
             Zombie.image = load_image('Monster-zombie.png')
 
 
     def update(self, frame_time):
-        self.frame = (self.frame + 1) % 7
+        self.total_frames += Zombie.FRAMES_PER_ACTION * Zombie.ACTION_PER_TIME * frame_time
+        self.frame = int(self.total_frames) % 7
         self.x -= self.speed
 
     def draw(self):

@@ -1,4 +1,5 @@
 import game_framework
+import end_state
 
 from pico2d import*
 
@@ -15,27 +16,30 @@ zombies = None
 lizards = None
 octopuses = None
 boy = None
-backgroundd = None
-heart = None
+background = None
+hearts = None
+
 
 def create_world():
-    global boy, background, zombies, lizards, octopuses, heart
+    global boy, background, zombies, lizards, octopuses, hearts
+    global heart1, heart2, heart3, heart4
     boy = Boy()
-    background = Background()
-    heart = Heart()
+    background = Background(800, 600)
+    hearts = [Heart() for i in range(5)]
     zombies = [Zombie() for i in range(4)]
     lizards = [Lizard() for i in range(4)]
     octopuses = [Octopus() for i in range(4)]
+    for i in range(1, 5):
+        hearts[i].x = hearts[i - 1].x + 40
 
 def destroy_world():
-    global boy, background, zombies, lizards, octopuses
-
+    global boy, background, zombies, lizards, octopuses, hearts
     del(boy)
     del(background)
     del(zombies)
     del(lizards)
     del(octopuses)
-    del(heart)
+    del(hearts)
 
 
 
@@ -56,7 +60,6 @@ def pause():
 
 def resume():
     pass
-
 
 def handle_events(frame_time):
     events = get_events()
@@ -82,6 +85,9 @@ def collide(a, b):
 
 
 def update(frame_time):
+    if len(hearts) == 0:
+        game_framework.change_state(end_state)
+
     boy.update(frame_time)
     for zombie in zombies:
         zombie.update(frame_time)
@@ -93,6 +99,11 @@ def update(frame_time):
     for zombie in zombies:
         if collide(boy, zombie):
             zombies.remove(zombie)
+            if boy.state in (boy.Attack1,boy.Attack2):
+                pass
+            else:
+                for heart in hearts:
+                    hearts.remove(heart)
     for lizard in lizards:
         if collide(boy, lizard):
             lizards.remove(lizard)
@@ -105,8 +116,9 @@ def update(frame_time):
 def draw(frame_time):
     clear_canvas()
     background.draw()
-    heart.draw()
     boy.draw()
+    for heart in hearts:
+        heart.draw()
     for zombie in zombies:
         zombie.draw()
     for octopus in octopuses:
