@@ -22,15 +22,15 @@ hearts = None
 
 def create_world():
     global boy, background, zombies, lizards, octopuses, hearts
-    global heart1, heart2, heart3, heart4
     boy = Boy()
-    background = Background(800, 600)
+    background = Background(600, 600)
     hearts = [Heart() for i in range(5)]
     zombies = [Zombie() for i in range(4)]
     lizards = [Lizard() for i in range(4)]
     octopuses = [Octopus() for i in range(4)]
-    for i in range(1, 5):
-        hearts[i].x = hearts[i - 1].x + 40
+
+
+
 
 def destroy_world():
     global boy, background, zombies, lizards, octopuses, hearts
@@ -44,7 +44,7 @@ def destroy_world():
 
 
 def enter():
-    open_canvas()
+    open_canvas(600, 600)
     game_framework.reset_time()
     create_world()
 
@@ -52,14 +52,6 @@ def enter():
 def exit():
     destroy_world()
     close_canvas()
-
-
-def pause():
-    pass
-
-
-def resume():
-    pass
 
 def handle_events(frame_time):
     events = get_events()
@@ -71,6 +63,7 @@ def handle_events(frame_time):
                 game_framework.quit()
             else:
                 boy.handle_event(event)
+                background.handle_event(event)
 
 
 
@@ -83,12 +76,20 @@ def collide(a, b):
 
     return True
 
+def pause():
+    pass
+
+def resume():
+    pass
 
 def update(frame_time):
-    if len(hearts) == 0:
-        game_framework.change_state(end_state)
+
+    for i in range(0, len(hearts) - 1):
+        hearts[i].x = hearts[i + 1].x - 40
 
     boy.update(frame_time)
+    background.update(frame_time)
+
     for zombie in zombies:
         zombie.update(frame_time)
     for lizard in lizards:
@@ -99,11 +100,9 @@ def update(frame_time):
     for zombie in zombies:
         if collide(boy, zombie):
             zombies.remove(zombie)
-            if boy.state in (boy.Attack1,boy.Attack2):
-                pass
-            else:
-                for heart in hearts:
-                    hearts.remove(heart)
+            for heart in hearts:
+                hearts.remove(heart)
+
     for lizard in lizards:
         if collide(boy, lizard):
             lizards.remove(lizard)
